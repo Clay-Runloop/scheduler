@@ -13,7 +13,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: TIMEZONE
-        value: America/New_York
+        value: America/Los_Angeles
       - key: BUSINESS_HOURS_START
         value: 9
       - key: BUSINESS_HOURS_END

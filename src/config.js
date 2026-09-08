@@ -26,7 +26,7 @@ export const config = {
   businessHoursStart: envInt('BUSINESS_HOURS_START', 9),
   businessHoursEnd: envInt('BUSINESS_HOURS_END', 17),
   businessDays: envList('BUSINESS_DAYS', [1, 2, 3, 4, 5]),
-  timezone: process.env.TIMEZONE || 'UTC',
+  timezone: process.env.TIMEZONE || 'America/Los_Angeles',
   meetingLengthMin: envInt('MEETING_LENGTH_MIN', 30),
   meetingBufferMin: envInt('MEETING_BUFFER_MIN', 0),
   bookingHorizonDays: envInt('BOOKING_HORIZON_DAYS', 30),

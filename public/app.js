@@ -57,6 +57,21 @@ function formatHour(h) {
   return `${hr}${ap}`;
 }
 
+// Format a slot's start/end (ISO strings) in the visitor's browser timezone.
+function localView(startIso, endIso) {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  const dateFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const timeFmt = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  const tzFmt = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' });
+  const tz = tzFmt.formatToParts(start).find((p) => p.type === 'timeZoneName')?.value || '';
+  return {
+    date: dateFmt.format(start),
+    time: `${timeFmt.format(start)}–${timeFmt.format(end)}`,
+    tz,
+  };
+}
+
 async function loadSlots() {
   const container = $('#slots');
   container.innerHTML = '<p class="empty">Loading…</p>';
@@ -77,9 +92,19 @@ function renderSlots(slots) {
   }
   const byDate = {};
   for (const s of slots) {
-    (byDate[s.date] = byDate[s.date] || []).push(s);
+    const v = localView(s.start, s.end);
+    (byDate[v.date] = byDate[v.date] || []).push({ ...s, _view: v });
   }
   container.innerHTML = '';
+  const tzLabel = Object.values(byDate)[0]?.[0]?._view?.tz || '';
+  if (tzLabel) {
+    const tzNote = document.createElement('div');
+    tzNote.className = 'day-label';
+    tzNote.style.textTransform = 'none';
+    tzNote.style.letterSpacing = '0';
+    tzNote.textContent = `Times shown in your local timezone (${tzLabel})`;
+    container.appendChild(tzNote);
+  }
   for (const date of Object.keys(byDate)) {
     const group = document.createElement('div');
     group.className = 'day-group';
@@ -89,7 +114,7 @@ function renderSlots(slots) {
     for (const s of byDate[date]) {
       const btn = document.createElement('button');
       btn.className = 'slot';
-      btn.textContent = s.time;
+      btn.textContent = s._view.time;
       btn.dataset.start = s.start;
       btn.addEventListener('click', () => selectSlot(s));
       grid.appendChild(btn);
@@ -101,7 +126,8 @@ function renderSlots(slots) {
 
 function selectSlot(slot) {
   selectedStart = slot.start;
-  $('#chosen-slot').textContent = `${slot.date} · ${slot.time}`;
+  const v = slot._view || localView(slot.start, slot.end);
+  $('#chosen-slot').textContent = `${v.date} · ${v.time}${v.tz ? ' ' + v.tz : ''}`;
   $('#slots').classList.add('hidden');
   $('#form').classList.remove('hidden');
 }
@@ -133,7 +159,8 @@ $('#booking-form').addEventListener('submit', async (e) => {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Booking failed');
     $('#form').classList.add('hidden');
-    $('#confirm-details').textContent = `${data.booking.date} · ${data.booking.time}`;
+    const v = localView(data.booking.start, data.booking.end);
+    $('#confirm-details').textContent = `${v.date} · ${v.time}${v.tz ? ' ' + v.tz : ''}`;
     $('#confirm-note').textContent =
       status && status.calendarConnected
         ? 'A calendar invite has been sent to your email.'
