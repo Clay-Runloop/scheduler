@@ -4,11 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book a meeting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <div class="bg-glow"></div>
   <main class="card">
-    <header>
+    <header class="card-header">
+      <img src="/runloop-logo.svg" alt="Runloop" class="logo" />
       <h1>Book a meeting</h1>
       <p id="subtitle" class="muted">Loading availability…</p>
     </header>
@@ -45,14 +50,13 @@
     </section>
 
     <section id="confirmation" class="confirmation hidden">
-      <div class="check">✓</div>
+      <div class="check">&#10003;</div>
       <h2>You're booked!</h2>
       <p id="confirm-details"></p>
       <p class="muted" id="confirm-note"></p>
       <button class="btn btn-block" id="book-another">Book another meeting</button>
     </section>
   </main>
-
   <script src="/app.js"></script>
 </body>
 </html>
