@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
-import { config, googleEnabled } from './src/config.js';
+import { config, googleEnabled, partnerEnabled } from './src/config.js';
 import { availableSlots, parseSlotStart, slotToView } from './src/slots.js';
 import { getBookings, addBooking, findBooking } from './src/store.js';
 import * as cal from './src/calendar.js';
@@ -27,6 +27,7 @@ app.get('/api/status', async (req, res) => {
     businessHours: { start: config.businessHoursStart, end: config.businessHoursEnd, days: config.businessDays, timezone: config.timezone },
     meetingLengthMin: config.meetingLengthMin,
     bookingHorizonDays: config.bookingHorizonDays,
+    partner: partnerEnabled ? { name: config.partner.name } : null,
     publicBookingUrl: `${origin(req)}/`,
   });
 });

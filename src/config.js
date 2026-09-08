@@ -35,6 +35,12 @@ export const config = {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
   },
+  partner: {
+    name: process.env.PARTNER_NAME || '',
+    calendarId: process.env.PARTNER_CALENDAR_ID || '',
+    email: process.env.PARTNER_EMAIL || '',
+  },
 };
 
 export const googleEnabled = Boolean(config.google.clientId && config.google.clientSecret);
+export const partnerEnabled = Boolean(config.partner.calendarId || config.partner.email);

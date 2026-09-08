@@ -22,3 +22,9 @@ services:
         value: 1,2,3,4,5
       - key: MEETING_LENGTH_MIN
         value: 30
+      - key: PARTNER_NAME
+        value: Abigail
+      - key: PARTNER_CALENDAR_ID
+        sync: false
+      - key: PARTNER_EMAIL
+        sync: false
