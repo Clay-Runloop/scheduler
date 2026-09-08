@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: scheduler
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.10.0
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: TIMEZONE
+        value: America/New_York
+      - key: BUSINESS_HOURS_START
+        value: 9
+      - key: BUSINESS_HOURS_END
+        value: 17
+      - key: BUSINESS_DAYS
+        value: 1,2,3,4,5
+      - key: MEETING_LENGTH_MIN
+        value: 30

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a meeting</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>Book a meeting</h1>
+      <p id="subtitle" class="muted">Loading availability…</p>
+    </header>
+
+    <div id="connect-banner" class="banner hidden">
+      <div>
+        <strong>Calendar not connected.</strong>
+        <span class="muted">Slots below are based on local bookings only.</span>
+      </div>
+      <a href="/oauth/start" class="btn btn-primary">Connect Google Calendar</a>
+    </div>
+
+    <section id="slots" class="slots"></section>
+
+    <section id="form" class="form hidden">
+      <button class="back" id="back">&larr; Back</button>
+      <h2 id="chosen-slot"></h2>
+      <form id="booking-form">
+        <label>
+          Name
+          <input type="text" name="name" required maxlength="100" autocomplete="name" />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" required maxlength="200" autocomplete="email" />
+        </label>
+        <label>
+          Note (optional)
+          <textarea name="note" maxlength="1000" rows="3"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Confirm booking</button>
+        <p id="form-error" class="error hidden"></p>
+      </form>
+    </section>
+
+    <section id="confirmation" class="confirmation hidden">
+      <div class="check">\u2713</div>
+      <h2>You're booked!</h2>
+      <p id="confirm-details"></p>
+      <p class="muted" id="confirm-note"></p>
+      <button class="btn btn-block" id="book-another">Book another meeting</button>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
