@@ -32,17 +32,6 @@ async function loadStatus() {
     $('#subtitle').textContent =
       `${status.meetingLengthMin}-min meetings · ${formatHour(bh.start)}–${formatHour(bh.end)} (${bh.timezone}) · ${dayNames}`;
 
-    if (status.partner && status.partner.name) {
-      const note = document.createElement('div');
-      note.className = 'day-label';
-      note.style.textTransform = 'none';
-      note.style.letterSpacing = '0';
-      note.style.fontSize = '0.9rem';
-      note.style.marginTop = '8px';
-      note.textContent = `Slots checked against your calendar and ${status.partner.name}'s.`;
-      $('#subtitle').after(note);
-    }
-
     if (status.googleEnabled && !status.calendarConnected) {
       $('#connect-banner').classList.remove('hidden');
     }
