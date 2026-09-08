@@ -62,7 +62,7 @@ function localView(startIso, endIso) {
   const start = new Date(startIso);
   const end = new Date(endIso);
   const dateFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' });
-  const timeFmt = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
   const tzFmt = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' });
   const tz = tzFmt.formatToParts(start).find((p) => p.type === 'timeZoneName')?.value || '';
   return {
