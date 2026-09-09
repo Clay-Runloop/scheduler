@@ -49,7 +49,7 @@ app.get('/api/slots', async (req, res) => {
 
 app.post('/api/book', async (req, res) => {
   try {
-    const { start, name, email, note } = req.body || {};
+    const { start, name, email, company, note } = req.body || {};
     if (!start || !name || !email) return res.status(400).json({ error: 'start, name, and email are required' });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Invalid email' });
     const slot = parseSlotStart(start);
@@ -58,11 +58,12 @@ app.post('/api/book', async (req, res) => {
     const booking = {
       id: crypto.randomUUID(), start: slot.start.toISOString(), end: slot.end.toISOString(),
       name: String(name).slice(0, 100), email: String(email).slice(0, 200),
+      company: company ? String(company).slice(0, 200) : '',
       note: note ? String(note).slice(0, 1000) : '', createdAt: new Date().toISOString(),
     };
     await addBooking(booking);
     if (googleEnabled && (await cal.isCalendarConnected())) {
-      try { await cal.createBookingEvent(slot, { name: booking.name, email: booking.email, note: booking.note }); } catch (e) { console.error('event creation failed:', e.message); }
+      try { await cal.createBookingEvent(slot, { name: booking.name, email: booking.email, company: booking.company, note: booking.note }); } catch (e) { console.error('event creation failed:', e.message); }
     }
     res.json({ ok: true, booking: slotToView(slot) });
   } catch (e) { res.status(500).json({ error: 'Booking failed' }); }

@@ -56,7 +56,7 @@ function localView(startIso, endIso) {
   const tz = tzFmt.formatToParts(start).find((p) => p.type === 'timeZoneName')?.value || '';
   return {
     date: dateFmt.format(start),
-    time: `${timeFmt.format(start)}–${timeFmt.format(end)}`,
+    time: `${timeFmt.format(start)}`,
     tz,
   };
 }
@@ -142,6 +142,7 @@ $('#booking-form').addEventListener('submit', async (e) => {
         start: selectedStart,
         name: fd.get('name'),
         email: fd.get('email'),
+        company: fd.get('company'),
         note: fd.get('note'),
       }),
     });

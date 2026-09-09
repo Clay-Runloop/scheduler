@@ -49,11 +49,11 @@ export async function createBookingEvent(slot, details) {
     attendees.push({ email: config.partner.email, displayName: config.partner.name || undefined });
   }
   const summary = partnerEnabled && config.partner.name
-    ? `Meeting with ${details.name} (incl. ${config.partner.name})`
-    : `Meeting with ${details.name}`;
+    ? `Meeting with ${details.name}${details.company ? ` (${details.company})` : ''} (incl. ${config.partner.name})`
+    : `Meeting with ${details.name}${details.company ? ` (${details.company})` : ''}`;
   const event = {
     summary,
-    description: [`Booked via scheduler.`, `Email: ${details.email}`, details.note ? `Note: ${details.note}` : ''].filter(Boolean).join('\n'),
+    description: [`Booked via scheduler.`, `Email: ${details.email}`, details.company ? `Company: ${details.company}` : '', details.note ? `Note: ${details.note}` : ''].filter(Boolean).join('\n'),
     start: { dateTime: slot.start.toISOString(), timeZone: config.timezone },
     end: { dateTime: slot.end.toISOString(), timeZone: config.timezone },
     attendees,
