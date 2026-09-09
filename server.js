@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { config, googleEnabled, partnerEnabled } from './src/config.js';
 import { availableSlots, parseSlotStart, slotToView } from './src/slots.js';
-import { getBookings, addBooking, findBooking } from './src/store.js';
+import { getBookings, addBooking, findBooking, getGoogleToken } from './src/store.js';
 import * as cal from './src/calendar.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -78,5 +78,13 @@ app.get('/oauth/callback', async (req, res) => {
   try { await cal.handleOAuthCallback(String(code), origin(req)); res.redirect('/?connected=1'); } catch (e) { console.error(e); res.redirect('/?connected=0'); }
 });
 app.post('/api/disconnect', async (req, res) => { await cal.disconnect(); res.json({ ok: true }); });
+
+// Returns the Google OAuth token as JSON so it can be copied into the
+// GOOGLE_TOKEN env var on Render (survives ephemeral-filesystem wipes).
+app.get('/api/token', async (req, res) => {
+  const token = await getGoogleToken();
+  if (!token) return res.status(404).json({ error: 'No token. Connect Google Calendar first.' });
+  res.json(token);
+});
 
 app.listen(config.port, '0.0.0.0', () => { console.log(`Scheduler running on port ${config.port}`); });

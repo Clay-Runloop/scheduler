@@ -6,9 +6,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
 
+// The Google OAuth token is stored in the GOOGLE_TOKEN env var so it survives
+// Render's ephemeral filesystem across deploys. Bookings are kept on disk (and
+// rebuilt from the calendar anyway).
+const TOKEN_ENV = 'GOOGLE_TOKEN';
+
 const DEFAULTS = {
-  bookings: [], // { id, start, end, name, email, note, createdAt }
-  googleToken: null, // OAuth token set from Google
+  bookings: [],
+  googleToken: null,
 };
 
 let cache = null;
@@ -25,6 +30,15 @@ async function load() {
     cache = { ...DEFAULTS, ...JSON.parse(raw) };
   } catch {
     cache = { ...DEFAULTS };
+  }
+  // Prefer the env-var token (authoritative across deploys) over the file copy.
+  const envToken = process.env[TOKEN_ENV];
+  if (envToken) {
+    try {
+      cache.googleToken = JSON.parse(envToken);
+    } catch {
+      cache.googleToken = null;
+    }
   }
   return cache;
 }
@@ -61,10 +75,18 @@ export async function setGoogleToken(token) {
   const data = await load();
   data.googleToken = token;
   await save();
+  // Print the token so you can copy it into Render's env once.
+  console.log('\n========================================');
+  console.log('  GOOGLE TOKEN (paste into Render env var');
+  console.log('  GOOGLE_TOKEN):');
+  console.log('========================================');
+  console.log(JSON.stringify(token));
+  console.log('========================================\n');
 }
 
 export async function clearGoogleToken() {
   const data = await load();
   data.googleToken = null;
   await save();
+  console.log('GOOGLE_TOKEN cleared. Remove the env var on Render to fully disconnect.');
 }
